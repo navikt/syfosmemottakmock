@@ -1,0 +1,35 @@
+apiVersion: "nais.io/v1alpha1"
+kind: Application
+metadata:
+  name: syfosmemottakmock
+  namespace: default
+  labels:
+    team: "teamsykefravr"
+spec:
+  name: "syfosminfotrygd"
+  image: "repo.adeo.no:5443/syfo/syfosmemottakmock:@@VERSION@@"
+  replicas:
+    min: 1
+    max: 2
+    cpuThresholdPercentage: 90
+  port: 8080
+  liveness:
+    path: /is_alive
+    initialDelay: 5
+    periodSeconds: 5
+    failureThreshold: 30
+  readiness:
+    path: /is_ready
+    initialDelay: 30
+    timeout: 5
+    periodSeconds: 10
+  prometheus:
+    enabled: true
+    path: /prometheus
+  resources:
+    limits:
+      cpu: 200m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
