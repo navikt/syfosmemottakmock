@@ -6,7 +6,6 @@ import javax.ws.rs.Path
 import javax.ws.rs.ServiceUnavailableException
 import javax.ws.rs.core.Response
 
-// TODO
 @Path("/")
 class NaisRest(
     private val readynessCheck: () -> Boolean,
