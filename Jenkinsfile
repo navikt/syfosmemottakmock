@@ -45,12 +45,6 @@ pipeline {
                 slackStatus status: 'passed'
             }
         }
-        stage('Create kafka topics') {
-            steps {
-                sh 'echo TODO'
-                // TODO
-            }
-        }
         stage('push docker image') {
             steps {
                 dockerUtils action: 'createPushImage'
@@ -72,7 +66,6 @@ pipeline {
     post {
         always {
             postProcess action: 'always'
-            archiveArtifacts artifacts: 'build/reports/rules.csv', allowEmptyArchive: true
         }
         success {
             postProcess action: 'success'
