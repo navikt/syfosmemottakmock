@@ -23,13 +23,13 @@ spec:
     initialDelay: 30
     timeout: 5
     periodSeconds: 10
-  prometheus:
-    enabled: true
-    path: /prometheus
   resources:
     limits:
       cpu: 200m
-      memory: 512Mi
+      memory: 256Mi
     requests:
       cpu: 100m
       memory: 128Mi
+  env:
+  - name: CLUSTER
+    value: {{CLUSTER}}

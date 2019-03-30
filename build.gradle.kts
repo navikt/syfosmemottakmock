@@ -9,15 +9,19 @@ val logstashEncoderVersion = "5.1"
 val prometheusVersion = "0.6.0"
 val jerseyVersion = "2.27"
 
+group = "no.nav.syfo"
+version = "1.0-SNAPSHOT"
+
+tasks.withType<Jar> {
+    manifest.attributes["Main-Class"] = "no.nav.syfo.BootstrapKt"
+}
+
 plugins {
     kotlin("jvm") version "1.3.21"
     id("org.jmailen.kotlinter") version "1.21.0"
     id("com.diffplug.gradle.spotless") version "3.18.0"
     id("com.github.johnrengelman.shadow") version "4.0.4"
 }
-
-group = "no.nav.syfo"
-version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
