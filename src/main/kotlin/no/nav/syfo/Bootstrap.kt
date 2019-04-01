@@ -1,6 +1,5 @@
 package no.nav.syfo
 
-import io.prometheus.client.hotspot.DefaultExports
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.runBlocking
 import no.nav.syfo.api.NaisRest
@@ -17,7 +16,6 @@ fun main(args: Array<String>) = runBlocking(Executors.newFixedThreadPool(2).asCo
     val env = Environment()
     val applicationState = ApplicationState()
 
-    DefaultExports.initialize()
     val applicationServer = Server(env.applicationPort).apply {
         handler = HandlerCollection().apply {
             handlers = arrayOf(NaisRest()) // TODO add non-spring cxf ws handler here
