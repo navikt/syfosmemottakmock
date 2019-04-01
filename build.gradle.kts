@@ -71,9 +71,6 @@ dependencies {
     implementation ("ch.qos.logback:logback-classic:$logbackVersion")
     implementation ("net.logstash.logback:logstash-logback-encoder:$logstashEncoderVersion")
 
-    implementation ("io.prometheus:simpleclient_hotspot:$prometheusVersion")
-    implementation ("io.prometheus:simpleclient_common:$prometheusVersion")
-
     implementation ("javax.xml.ws:jaxws-api:$jaxwsApiVersion")
     implementation ("javax.annotation:javax.annotation-api:$javaxAnnotationApiVersion")
     implementation ("javax.xml.bind:jaxb-api:$jaxbApiVersion")

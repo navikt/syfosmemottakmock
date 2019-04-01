@@ -1,44 +1,41 @@
 package no.nav.syfo.api
 
-import no.nav.syfo.log
-import javax.ws.rs.GET
-import javax.ws.rs.Path
-import javax.ws.rs.ServiceUnavailableException
-import javax.ws.rs.core.Response
+import org.eclipse.jetty.server.Request
+import org.eclipse.jetty.server.handler.AbstractHandler
+import javax.servlet.http.HttpServletResponse
+import java.io.IOException
+import javax.servlet.http.HttpServletRequest
 
-@Path("/")
-class NaisRest(
-    private val readynessCheck: () -> Boolean,
-    private val livenessCheck: () -> Boolean = { true }
-) {
+class NaisRest : AbstractHandler() {
 
-    val isAlive: Response
-        @GET
-        @Path("is_alive")
-        get() {
-            if (livenessCheck()) {
-                log.trace("isAlive called, returning not ok")
-                throw ServiceUnavailableException()
-            } else {
-
-                log.trace("isAlive called, returning ok")
-                return Response.noContent()
-                    .build()
-            }
+    @Throws(IOException::class)
+    override fun handle(target: String, baseRequest: Request, request: HttpServletRequest, response: HttpServletResponse) {
+        if ("/is_alive" == target) {
+            handleIsAlive(response)
+            baseRequest.setHandled(true)
         }
 
-    val isReady: Response
-        @GET
-        @Path("is_ready")
-        get() {
-            if (readynessCheck()) {
-                log.trace("isReady called, returning not ok")
-                throw ServiceUnavailableException()
-            } else {
-
-                log.trace("isReady called, returning ok")
-                return Response.noContent()
-                    .build()
-            }
+        if ("/is_ready" == target) {
+            handleIsReady(response)
+            baseRequest.setHandled(true)
         }
+    }
+
+    @Throws(IOException::class)
+    private fun handleIsAlive(response: HttpServletResponse) {
+        response.contentType = "text/html; charset=utf-8"
+        response.status = HttpServletResponse.SC_OK
+
+        val out = response.writer
+        out.println("I'm alive!")
+    }
+
+    @Throws(IOException::class)
+    private fun handleIsReady(response: HttpServletResponse) {
+        response.contentType = "text/html; charset=utf-8"
+        response.status = HttpServletResponse.SC_OK
+
+        val out = response.writer
+        out.println("I'm ready!")
+    }
 }

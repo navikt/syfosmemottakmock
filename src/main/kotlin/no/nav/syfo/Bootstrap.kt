@@ -5,10 +5,7 @@ import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.runBlocking
 import no.nav.syfo.api.NaisRest
 import org.eclipse.jetty.server.Server
-import org.eclipse.jetty.servlet.ServletContextHandler
-import org.eclipse.jetty.servlet.ServletHolder
-import org.glassfish.jersey.server.ResourceConfig
-import org.glassfish.jersey.servlet.ServletContainer
+import org.eclipse.jetty.server.handler.HandlerCollection
 import java.util.concurrent.Executors
 import org.slf4j.LoggerFactory
 
@@ -22,17 +19,8 @@ fun main(args: Array<String>) = runBlocking(Executors.newFixedThreadPool(2).asCo
 
     DefaultExports.initialize()
     val applicationServer = Server(env.applicationPort).apply {
-        handler = ServletContextHandler(ServletContextHandler.NO_SECURITY).apply {
-            contextPath = "/"
-            addServlet(ServletHolder(ServletContainer(ResourceConfig().apply {
-                register(NaisRest(readynessCheck = {
-                    applicationState.initialized
-                },
-                    livenessCheck = {
-                        applicationState.running
-                    }))
-            }
-            )), "/*")
+        handler = HandlerCollection().apply {
+            handlers = arrayOf(NaisRest()) // TODO add non-spring cxf ws handler here
         }
     }
 
