@@ -8,6 +8,12 @@ val logbackVersion = "1.2.3"
 val logstashEncoderVersion = "5.1"
 val prometheusVersion = "0.6.0"
 val jerseyVersion = "2.27"
+val jaxwsToolsVersion = "2.3.1"
+val javaxActivationVersion = "1.1.1"
+val jaxbApiVersion = "2.4.0-b180830.0359"
+val jaxbRuntimeVersion = "2.4.0-b180830.0438"
+val jaxwsApiVersion = "2.3.1"
+val javaxAnnotationApiVersion = "1.3.2"
 
 group = "no.nav.syfo"
 version = "1.0-SNAPSHOT"
@@ -21,6 +27,17 @@ plugins {
     id("org.jmailen.kotlinter") version "1.21.0"
     id("com.diffplug.gradle.spotless") version "3.18.0"
     id("com.github.johnrengelman.shadow") version "4.0.4"
+}
+
+buildscript {
+    dependencies {
+        classpath("javax.xml.bind:jaxb-api:2.4.0-b180830.0359")
+        classpath("org.glassfish.jaxb:jaxb-runtime:2.4.0-b180830.0438")
+        classpath("com.sun.activation:javax.activation:1.2.0")
+        classpath("com.sun.xml.ws:jaxws-tools:2.3.1") {
+            exclude(group = "com.sun.xml.ws", module = "policy")
+        }
+    }
 }
 
 repositories {
@@ -56,6 +73,15 @@ dependencies {
 
     implementation ("io.prometheus:simpleclient_hotspot:$prometheusVersion")
     implementation ("io.prometheus:simpleclient_common:$prometheusVersion")
+
+    implementation ("javax.xml.ws:jaxws-api:$jaxwsApiVersion")
+    implementation ("javax.annotation:javax.annotation-api:$javaxAnnotationApiVersion")
+    implementation ("javax.xml.bind:jaxb-api:$jaxbApiVersion")
+    implementation ("org.glassfish.jaxb:jaxb-runtime:$jaxbRuntimeVersion")
+    implementation ("javax.activation:activation:$javaxActivationVersion")
+    implementation("com.sun.xml.ws:jaxws-tools:$jaxwsToolsVersion") {
+        exclude(group = "com.sun.xml.ws", module = "policy")
+    }
 }
 
 tasks {
