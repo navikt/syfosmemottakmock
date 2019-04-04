@@ -11,7 +11,7 @@ const val APPLICATION_READY = "Application is ready"
 class NaisRest : AbstractHandler() {
 
     override fun handle(target: String, baseRequest: Request, request: HttpServletRequest, response: HttpServletResponse) {
-        response.contentType = ("text/html; charset=utf-8")
+        response.contentType = ("text/plain; charset=utf-8")
         response.status = HttpServletResponse.SC_OK
         when (target) {
             "/is_alive" -> {
