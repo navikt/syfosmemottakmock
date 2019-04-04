@@ -7,8 +7,6 @@ val coroutinesVersion = "1.0.1"
 val jettyServerVersion = "9.4.15.v20190215"
 val logbackVersion = "1.2.3"
 val logstashEncoderVersion = "5.1"
-val prometheusVersion = "0.6.0"
-val jerseyVersion = "2.27"
 val jaxwsToolsVersion = "2.3.1"
 val javaxActivationVersion = "1.1.1"
 val jaxbApiVersion = "2.4.0-b180830.0359"
@@ -27,8 +25,8 @@ tasks.withType<Jar> {
 
 plugins {
     java
-    kotlin("jvm") version "1.3.21"
     id("no.nils.wsdl2java") version "0.10"
+    kotlin("jvm") version "1.3.21"
     id("org.jmailen.kotlinter") version "1.21.0"
     id("com.diffplug.gradle.spotless") version "3.18.0"
     id("com.github.johnrengelman.shadow") version "4.0.4"
@@ -56,53 +54,53 @@ repositories {
     maven (url= "https://kotlin.bintray.com/kotlinx")
 }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
-}
-
 val navWsdl= configurations.create("navWsdl") {
     setTransitive(false)
 }
 
 dependencies {
-    implementation(kotlin("stdlib"))
-
+    wsdl2java("javax.annotation:javax.annotation-api:$javaxAnnotationApiVersion")
+    wsdl2java("javax.activation:activation:$javaxActivationVersion")
+    wsdl2java("org.glassfish.jaxb:jaxb-runtime:$jaxbRuntimeVersion")
+    wsdl2java("javax.xml.bind:jaxb-api:$jaxbApiVersion")
+    wsdl2java ("javax.xml.ws:jaxws-api:$jaxwsApiVersion")
+    wsdl2java ("com.sun.xml.ws:jaxws-tools:$jaxwsToolsVersion") {
+        exclude(group = "com.sun.xml.ws", module = "policy")
+    }
     navWsdl("no.nav.tjenester:subscription-nav-emottak-eletter-web:$subscriptionVersion@zip")
+
+    implementation(kotlin("stdlib"))
 
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
 
     implementation("org.eclipse.jetty:jetty-server:$jettyServerVersion")
     implementation("org.eclipse.jetty:jetty-servlet:$jettyServerVersion")
 
-    implementation("org.glassfish.jersey.core:jersey-server:$jerseyVersion")
-    implementation("org.glassfish.jersey.containers:jersey-container-jetty-servlet:$jerseyVersion")
-    implementation("org.glassfish.jersey.inject:jersey-hk2:$jerseyVersion")
-    implementation("org.glassfish.jersey.media:jersey-media-json-jackson:$jerseyVersion")
-
     implementation ("ch.qos.logback:logback-classic:$logbackVersion")
     implementation ("net.logstash.logback:logstash-logback-encoder:$logstashEncoderVersion")
 
     implementation ("org.apache.cxf:cxf-rt-frontend-jaxws:$cxfVersion")
     implementation ("org.apache.cxf:cxf-rt-transports-http:$cxfVersion")
-
-    implementation ("com.sun.xml.ws:jaxws-tools:$jaxwsApiVersion") {
-        exclude(group = "com.sun.xml.ws", module = "policy")
-    }
-
     implementation ("org.apache.cxf:cxf-rt-ws-security:$cxfVersion") {
         exclude(group = "org.opensaml")
     }
 
 
-    implementation ("javax.annotation:javax.annotation-api:$javaxAnnotationApiVersion")
-    implementation ("javax.xml.bind:jaxb-api:$jaxbApiVersion")
-    implementation ("org.glassfish.jaxb:jaxb-runtime:$jaxbRuntimeVersion")
-    implementation ("javax.activation:activation:$javaxActivationVersion")
+    implementation("javax.xml.ws:jaxws-api:$jaxwsApiVersion")
+    implementation("javax.annotation:javax.annotation-api:$javaxAnnotationApiVersion")
+    implementation("javax.xml.bind:jaxb-api:$jaxbApiVersion")
+    implementation("org.glassfish.jaxb:jaxb-runtime:$jaxbRuntimeVersion")
+    implementation("javax.activation:activation:$javaxActivationVersion")
+    implementation("com.sun.xml.ws:jaxws-tools:$jaxwsToolsVersion") {
+        exclude(group = "com.sun.xml.ws", module = "policy")
+    }
 }
 
 tasks {
     create("printVersion") {
-        println(project.version)
+        doLast {
+            println(project.version)
+        }
     }
 
     withType<KotlinCompile> {

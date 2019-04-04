@@ -9,9 +9,9 @@ import no.nav.emottak.subscription.SubscriptionPort
 class SubscriptionSoapImpl() : SubscriptionPort {
     override fun startSubscription(startSubscriptionRequest: StartSubscriptionRequest?): StatusResponse =
         StatusResponse().apply {
-             key = startSubscriptionRequest!!.key
-             status = 1
-             description = "Added"
+            key = startSubscriptionRequest!!.key
+            status = 1
+            description = "Added"
         }
 
     override fun finnElektroniskSamhandlerstatus(finnElektroniskSamhandlerstatusRequest: FinnElektroniskSamhandlerstatusRequest?): FinnElektroniskSamhandlerstatusResponse {
