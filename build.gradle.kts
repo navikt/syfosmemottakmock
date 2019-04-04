@@ -1,5 +1,6 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import com.github.jengelman.gradle.plugins.shadow.transformers.ServiceFileTransformer
+import no.nils.wsdl2java.Wsdl2JavaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val coroutinesVersion = "1.0.1"
@@ -14,6 +15,8 @@ val jaxbApiVersion = "2.4.0-b180830.0359"
 val jaxbRuntimeVersion = "2.4.0-b180830.0438"
 val jaxwsApiVersion = "2.3.1"
 val javaxAnnotationApiVersion = "1.3.2"
+val cxfVersion = "3.2.6"
+val subscriptionVersion = "1.0.5"
 
 group = "no.nav.syfo"
 version = "1.0-SNAPSHOT"
@@ -23,7 +26,9 @@ tasks.withType<Jar> {
 }
 
 plugins {
+    java
     kotlin("jvm") version "1.3.21"
+    id("no.nils.wsdl2java") version "0.10"
     id("org.jmailen.kotlinter") version "1.21.0"
     id("com.diffplug.gradle.spotless") version "3.18.0"
     id("com.github.johnrengelman.shadow") version "4.0.4"
@@ -55,8 +60,14 @@ tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
 }
 
+val navWsdl= configurations.create("navWsdl") {
+    setTransitive(false)
+}
+
 dependencies {
     implementation(kotlin("stdlib"))
+
+    navWsdl("no.nav.tjenester:subscription-nav-emottak-eletter-web:$subscriptionVersion@zip")
 
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
 
@@ -71,19 +82,51 @@ dependencies {
     implementation ("ch.qos.logback:logback-classic:$logbackVersion")
     implementation ("net.logstash.logback:logstash-logback-encoder:$logstashEncoderVersion")
 
-    implementation ("javax.xml.ws:jaxws-api:$jaxwsApiVersion")
+    implementation ("org.apache.cxf:cxf-rt-frontend-jaxws:$cxfVersion")
+    implementation ("org.apache.cxf:cxf-rt-transports-http:$cxfVersion")
+
+    implementation ("com.sun.xml.ws:jaxws-tools:$jaxwsApiVersion") {
+        exclude(group = "com.sun.xml.ws", module = "policy")
+    }
+
+    implementation ("org.apache.cxf:cxf-rt-ws-security:$cxfVersion") {
+        exclude(group = "org.opensaml")
+    }
+
+
     implementation ("javax.annotation:javax.annotation-api:$javaxAnnotationApiVersion")
     implementation ("javax.xml.bind:jaxb-api:$jaxbApiVersion")
     implementation ("org.glassfish.jaxb:jaxb-runtime:$jaxbRuntimeVersion")
     implementation ("javax.activation:activation:$javaxActivationVersion")
-    implementation("com.sun.xml.ws:jaxws-tools:$jaxwsToolsVersion") {
-        exclude(group = "com.sun.xml.ws", module = "policy")
-    }
 }
 
 tasks {
     create("printVersion") {
         println(project.version)
+    }
+
+    withType<KotlinCompile> {
+        dependsOn("wsdl2java")
+
+        kotlinOptions.jvmTarget = "1.8"
+    }
+
+    val copyWsdlFromArtifacts =  create("copyWsdlFromArtifacts", Copy::class) {
+        includeEmptyDirs = false
+
+        navWsdl.asFileTree.forEach { artifact ->
+            from(zipTree(artifact))
+        }
+        into("$buildDir/schema/")
+        include("**/*.xsd", "**/*.wsdl")
+    }
+
+    withType<Wsdl2JavaTask> {
+        dependsOn(copyWsdlFromArtifacts)
+        wsdlDir = file("$buildDir/schema")
+        wsdlsToGenerate = listOf(
+            mutableListOf("-xjc", "-b", "$projectDir/src/main/resources/xjb/binding.xml", "$buildDir/schema/subscription.wsdl")
+        )
     }
 
     withType<ShadowJar> {

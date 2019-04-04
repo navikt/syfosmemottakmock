@@ -1,4 +1,4 @@
-package no.nav.syfo.api
+package no.nav.syfo.api.rest
 
 import org.eclipse.jetty.server.Request
 import org.eclipse.jetty.server.handler.AbstractHandler
