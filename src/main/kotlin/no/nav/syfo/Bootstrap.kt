@@ -11,6 +11,7 @@ import org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor
 import org.apache.wss4j.dom.WSConstants
 import org.apache.wss4j.dom.handler.WSHandlerConstants
 import org.eclipse.jetty.server.Server
+import org.eclipse.jetty.server.handler.ContextHandler
 import org.eclipse.jetty.server.handler.HandlerCollection
 import org.eclipse.jetty.servlet.ServletContextHandler
 import org.eclipse.jetty.servlet.ServletHolder
@@ -36,16 +37,18 @@ fun main(args: Array<String>) = runBlocking(Executors.newFixedThreadPool(2).asCo
     val applicationServer = Server(env.applicationPort).apply {
         handler = HandlerCollection().apply {
             handlers = arrayOf(
-                NaisRest(),
+                ContextHandler("/internal").apply {
+                    handler = NaisRest()
+                },
                 ServletContextHandler(ServletContextHandler.NO_SECURITY or ServletContextHandler.NO_SESSIONS).apply {
-                    addServlet(ServletHolder(cxfServlet), "/*")
+                    addServlet(ServletHolder(cxfServlet), "/nav-emottak-eletter-web/*")
                 })
         }
     }
 
     applicationServer.start()
 
-    Endpoint.publish("/nav-emottak-eletter-web/services/", subscriptionEmottak).let {
+    Endpoint.publish("/services/", subscriptionEmottak).let {
         it as EndpointImpl
         it.server.endpoint.inInterceptors.add(
             WSS4JInInterceptor(mapOf(

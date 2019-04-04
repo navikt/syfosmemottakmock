@@ -3,39 +3,25 @@ package no.nav.syfo.api.rest
 import org.eclipse.jetty.server.Request
 import org.eclipse.jetty.server.handler.AbstractHandler
 import javax.servlet.http.HttpServletResponse
-import java.io.IOException
 import javax.servlet.http.HttpServletRequest
+
+const val APPLICATION_ALIVE = "Application is alive"
+const val APPLICATION_READY = "Application is ready"
 
 class NaisRest : AbstractHandler() {
 
-    @Throws(IOException::class)
     override fun handle(target: String, baseRequest: Request, request: HttpServletRequest, response: HttpServletResponse) {
-        if ("/is_alive" == target) {
-            handleIsAlive(response)
-            baseRequest.setHandled(true)
-        }
-
-        if ("/is_ready" == target) {
-            handleIsReady(response)
-            baseRequest.setHandled(true)
-        }
-    }
-
-    @Throws(IOException::class)
-    private fun handleIsAlive(response: HttpServletResponse) {
-        response.contentType = "text/html; charset=utf-8"
+        response.contentType = ("text/html; charset=utf-8")
         response.status = HttpServletResponse.SC_OK
-
-        val out = response.writer
-        out.println("I'm alive!")
-    }
-
-    @Throws(IOException::class)
-    private fun handleIsReady(response: HttpServletResponse) {
-        response.contentType = "text/html; charset=utf-8"
-        response.status = HttpServletResponse.SC_OK
-
-        val out = response.writer
-        out.println("I'm ready!")
+        when (target) {
+            "/is_alive" -> {
+                response.writer.println(APPLICATION_ALIVE)
+                baseRequest.isHandled = true
+            }
+            "/is_ready" -> {
+                response.writer.println(APPLICATION_READY)
+                baseRequest.isHandled = true
+            }
+        }
     }
 }

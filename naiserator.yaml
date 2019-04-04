@@ -14,12 +14,12 @@ spec:
     cpuThresholdPercentage: 90
   port: 8080
   liveness:
-    path: /is_alive
+    path: /internal/is_alive
     initialDelay: 5
     periodSeconds: 5
     failureThreshold: 30
   readiness:
-    path: /is_ready
+    path: /internal/is_ready
     initialDelay: 30
     timeout: 5
     periodSeconds: 10
