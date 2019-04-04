@@ -6,7 +6,7 @@ metadata:
   labels:
     team: "teamsykefravr"
 spec:
-  name: "syfosminfotrygd"
+  name: "syfosmemottakmock"
   image: "repo.adeo.no:5443/syfo/syfosmemottakmock:@@VERSION@@"
   replicas:
     min: 1
