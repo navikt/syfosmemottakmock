@@ -30,3 +30,5 @@ spec:
     requests:
       cpu: 100m
       memory: 128Mi
+  ingresses:
+    - "https://syfosmemottakmock.nais.preprod.local"
