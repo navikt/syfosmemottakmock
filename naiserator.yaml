@@ -32,3 +32,4 @@ spec:
       memory: 128Mi
   ingresses:
     - "https://syfosmemottakmock.nais.preprod.local"
+    - "https://syfosmemottakmock.nais.adeo.no"

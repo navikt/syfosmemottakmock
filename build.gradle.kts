@@ -18,7 +18,7 @@ val subscriptionVersion = "1.0.5"
 val kotlinVersion = "1.3.21"
 
 group = "no.nav.syfo"
-version = "1.0-SNAPSHOT"
+version = "1.0.0"
 
 tasks.withType<Jar> {
     manifest.attributes["Main-Class"] = "no.nav.syfo.BootstrapKt"
