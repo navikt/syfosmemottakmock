@@ -15,6 +15,7 @@ val jaxwsApiVersion = "2.3.1"
 val javaxAnnotationApiVersion = "1.3.2"
 val cxfVersion = "3.2.6"
 val subscriptionVersion = "1.0.5"
+val kotlinVersion = "1.3.21"
 
 group = "no.nav.syfo"
 version = "1.0-SNAPSHOT"
@@ -72,6 +73,8 @@ dependencies {
     implementation(kotlin("stdlib"))
 
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
+
+    implementation ("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
 
     implementation("org.eclipse.jetty:jetty-server:$jettyServerVersion")
     implementation("org.eclipse.jetty:jetty-servlet:$jettyServerVersion")
